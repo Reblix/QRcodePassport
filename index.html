@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerar QR Code para Passaporte</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Gerar QR Code para Passaporte</h1>
+    <form id="form-treinamento">
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" required>
+
+        <label for="matricula">Matrícula:</label>
+        <input type="text" id="matricula" required>
+
+        <label for="empresa">Empresa:</label>
+        <input type="text" id="empresa" required>
+
+        <label for="funcao">Função:</label>
+        <input type="text" id="funcao" required>
+
+        <div id="treinamentos">
+            <div class="treinamento">
+                <label for="curso">Treinamento:</label>
+                <input type="text" class="curso" required>
+
+                <label for="data_conclusao">Data de Conclusão:</label>
+                <input type="date" class="data_conclusao" required>
+
+                <div class="checkbox-container">
+                    <input type="checkbox" class="sem-validade">
+                    <label for="validade">Sem Validade</label>
+                    <input type="number" class="validade" placeholder="Meses">
+                </div>
+            </div>
+        </div>
+        <button type="button" id="adicionar-treinamento">Adicionar Treinamento</button>
+        <button type="button" id="gerar-qrcode">Gerar QR Code</button>
+    </form>
+    <div id="qrcode-container">
+        <div id="qrcode"></div>
+    </div>
+
+    <script>
+        document.getElementById("adicionar-treinamento").addEventListener("click", adicionarTreinamento);
+        document.getElementById("gerar-qrcode").addEventListener("click", gerarQRCode);
+
+        function adicionarTreinamento() {
+            const treinamentos = document.getElementById("treinamentos");
+            const treinamento = document.createElement("div");
+            treinamento.className = "treinamento";
+            treinamento.innerHTML = `
+                <label for="curso">Treinamento:</label>
+                <input type="text" class="curso" required>
+
+                <label for="data_conclusao">Data de Conclusão:</label>
+                <input type="date" class="data_conclusao" required>
+
+                <div class="checkbox-container">
+                    <input type="checkbox" class="sem-validade">
+                    <label for="validade">Sem Validade</label>
+                    <input type="number" class="validade" placeholder="Meses">
+            `;
+            treinamentos.appendChild(treinamento);
+        }
+
+        function gerarQRCode() {
+            const nome = document.getElementById("nome").value;
+            const matricula = document.getElementById("matricula").value;
+            const empresa = document.getElementById("empresa").value;
+            const funcao = document.getElementById("funcao").value;
+
+            let textoQRCode = `Nome: ${nome} | Matrícula: ${matricula} | Empresa: ${empresa} | Função: ${funcao}`;
+
+            const treinamentos = document.querySelectorAll(".treinamento");
+
+            for (let i = 0; i < treinamentos.length; i++) {
+                const curso = treinamentos[i].querySelector(".curso").value;
+                let data_conclusao = treinamentos[i].querySelector(".data_conclusao").value;
+                const sem_validade = treinamentos[i].querySelector(".sem-validade").checked;
+                const validade = treinamentos[i].querySelector(".validade").value;
+
+                data_conclusao = data_conclusao.split('-').reverse().join('/');
+
+                let vencimento = "";
+
+                if (!sem_validade && validade) {
+                    const dataVencimento = new Date(data_conclusao.split('/').reverse().join('-'));
+                    dataVencimento.setMonth(dataVencimento.getMonth() + Number(validade));
+                    const dia = dataVencimento.getDate().toString().padStart(2, "0");
+                    const mes = (dataVencimento.getMonth() + 1).toString().padStart(2, "0");
+                    const ano = dataVencimento.getFullYear();
+
+                    vencimento = `| Vencimento: ${dia}/${mes}/${ano}`;
+                } else if (sem_validade) {
+                    vencimento = "| Sem Vencimento";
+                }
+
+                textoQRCode += ` | Treinamento ${i+1}: ${curso} | Conclusão: ${data_conclusao} ${vencimento}`;
+            }
+
+            const qrcodeContainer = document.getElementById("qrcode");
+            qrcodeContainer.innerHTML = "";
+
+            const googleChartsAPI = "https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=";
+            const qrcodeURL = googleChartsAPI + encodeURIComponent(textoQRCode);
+
+            const img = document.createElement("img");
+            img.src = qrcodeURL;
+            img.alt = "QR Code";
+
+            qrcodeContainer.appendChild(img);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+body {
+    background-color: #008080; /* Azul Escuro */
+    color: #ADFF2F; /* Verde Claro */
+    font-family: Arial, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #ADFF2F; /* Verde Claro */
+}
+
+a {
+    color: #ADFF2F; /* Verde Claro */
+}
+
+button {
+    background-color: #ADFF2F; /* Verde Claro */
+    color: #008080; /* Azul Escuro */
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #7FFF00; /* Um tom mais escuro de verde */
+}
+
+form {
+    background-color: #006080; /* Um tom mais escuro de azul */
+    padding: 20px;
+    border-radius: 5px;
+}
+
+input, textarea {
+    padding: 10px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+}
